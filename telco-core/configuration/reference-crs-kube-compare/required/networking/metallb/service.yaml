@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .metadata.name }}
+  namespace: metallb-system
+{{ if .metadata.annotations }}
+{{- if ne (index .metadata.annotations "metallb.universe.tf/address-pool") nil -}}
+  annotations:
+    metallb.universe.tf/address-pool: {{ index .metadata.annotations "metallb.universe.tf/address-pool" }}
+{{end}}{{- end -}}
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: {{ .spec.selector.app }}
+  type: LoadBalancer
+  loadBalancerIP: {{ .spec.loadBalancerIP }}
