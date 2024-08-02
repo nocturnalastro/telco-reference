@@ -26,9 +26,12 @@ Parts:
             config:
               ignore-unspecified-fields: true
           - path: required/networking/metallb/metallbSubscription.yaml
-          - path: required/networking/metallb/service.yaml
-            config:
-              ignore-unspecified-fields: true
+          # Although service.yaml is in the reference CRs we accept
+          # any content. It is provided to simplify creation of
+          # services at deployment.
+          #- path: required/networking/metallb/service.yaml
+          #  config:
+          #    ignore-unspecified-fields: true
       - name: networking-multinetworkpolicy
         type: Required
         requiredTemplates:
@@ -121,7 +124,8 @@ Parts:
       - name: other
         type: Optional
         requiredTemplates:
-          - path: optional/networking/networkAttachmentDefinition.yaml
+          # The net-attach-def is only for convenience. There is no validated content.
+          #- path: optional/networking/networkAttachmentDefinition.yaml
           - path: optional/networking/multus/tap_cni/mc_rootless_pods_selinux.yaml
 
 fieldsToOmit:
@@ -133,6 +137,9 @@ fieldsToOmit:
       - pathToKey: metadata.annotations."kubernetes.io/metadata.name"
       - pathToKey: metadata.annotations."openshift.io/sa.scc.mcs"
       - pathToKey: metadata.annotations."openshift.io/sa.scc.supplemental-groups"
+      - pathToKey: metadata.annotations."machineconfiguration.openshift.io/mc-name-suffix"
+      - pathToKey: metadata.annotations."kubectl.kubernetes.io/last-applied-configuration"
+      - pathToKey: metadata.annotations."nmstate.io/webhook-mutating-timestamp"
       - pathToKey: metadata.labels."kubernetes.io/metadata.name"
       - pathToKey: metadata.labels."pod-security.kubernetes.io"
       - pathToKey: metadata.labels."security.openshift.io/scc.podSecurityLabelSync"
